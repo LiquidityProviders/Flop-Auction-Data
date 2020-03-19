@@ -627,8 +627,6 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
 // TODO: filter events for the chosen address
 // Create a second object to track our auctions in the ids
 
-
-
 async function getAuctionData() {
     // Fetch old events to populate list at initial load
     const blocksBack = 18095; // 18095 -> 3.14 days blocks count
@@ -639,23 +637,10 @@ async function getAuctionData() {
     // Parse event data and generate Auctions Object
     const FlopData = await retrieveFlopAuctionData(0);
 
-    return JSON.stringify(FlopData)
+    return FlopData;
 }
 
 module.exports = {
     getAuctionData
 }
 
-
-
-// https://blog.gsmart.in/es6-and-npm-modules-in-google-apps-script/
-// function doGet(request) {
-
-//     lastBlockfetch = await web3.eth.getBlockNumber();
-//     const fromBlock = lastBlockfetch - blocksBack;
-//     await getFlipEvents(fromBlock);
-//     // Initalize Flop Auction Data to return
-//     const FlopData = await retrieveFlopAuctionData(0);
-
-//     return ContentService.createTextOutput(JSON.stringify(FlopData));
-// }

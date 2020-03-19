@@ -1,7 +1,8 @@
-const getAuctionData = require("./getAuctions")
 
 const express = require("express");
 const app = express();
+
+const { getAuctionData } = require("./getAuctions")
 
 const port = 5000;
 
@@ -20,11 +21,14 @@ app.get("/", (req, res) => {
     res.send("Retrieve latest Flop Auction Data from Eth Mainnet");
 });
   
-// Mock APIs
-app.get("/auctions", (req, res) => {
-    // res.json([
-    //     { name: "William", location: "Abu Dhabi" },
-    //     { name: "Chris", location: "Vegas" }
-    // ]);
-    res.send(getAuctionData())
+// Retrieve Auction Data
+app.get("/auctions", async (req, res) => {
+    Promise.resolve(getAuctionData())
+        .then(auctions => {
+            console.log("auctions!", auctions)
+            res.json(auctions)
+        })
+        .catch(error => {
+            res.send(error)
+        })
 });

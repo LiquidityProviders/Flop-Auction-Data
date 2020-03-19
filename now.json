@@ -6,6 +6,11 @@
           "src": "/auctions",
           "dest": "/index.js",
           "methods": ["GET"]
+        },
+        {
+          "src": "/test",
+          "dest": "/index.js",
+          "methods": ["GET"]
         }
     ]
 }

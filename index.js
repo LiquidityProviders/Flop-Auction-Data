@@ -32,3 +32,48 @@ app.get("/auctions", async (req, res) => {
             res.send(error)
         })
 });
+
+app.get("/test", (req, res) => {
+    const mockData = {
+        42069: {
+            id: 42069,
+            address: '0xD9d1E81bb35DB066986Fa441113a27708663D70B',
+            kickDate: new Date(),
+            kickDay: new Date(),
+            kickMonth: new Date(),
+            kickPrice: "200.00",
+            kickLot: 500.00000,
+            tends: 0,
+            dents: 0,
+            bid: 198.00000,
+            bidPrice: null,
+            lot: null,
+            tab: 0,
+            guy: null,
+            dealPrice: null,
+            paidPrice: null,
+            state: "OPEN"            
+        },
+        42100: {
+            id: 42069,
+            address: '0x332f60EDC783E4Db3E0a18F8dFEB368Ae178CCd9',
+            kickDate: new Date(),
+            kickDay: new Date(),
+            kickMonth: new Date(),
+            kickPrice: "200.00",
+            kickLot: 500.00000,
+            tends: 0,
+            dents: 0,
+            bid: 198.00000,
+            bidPrice: null,
+            lot: null,
+            tab: 0,
+            guy: null,
+            dealPrice: null,
+            paidPrice: null,
+            state: "OPEN"            
+        }
+    }
+
+    res.json(mockData)
+});

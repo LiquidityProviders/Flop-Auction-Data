@@ -1,4 +1,5 @@
 const Web3 = require("web3")
+const moment = require("moment-timezone")
 
 // Contracts ABI
 const FLOPPER_ABI = [{"inputs":[{"internalType":"address","name":"vat_","type":"address"},{"internalType":"address","name":"gem_","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"lot","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"bid","type":"uint256"},{"indexed":true,"internalType":"address","name":"gal","type":"address"}],"name":"Kick","type":"event"},{"anonymous":true,"inputs":[{"indexed":true,"internalType":"bytes4","name":"sig","type":"bytes4"},{"indexed":true,"internalType":"address","name":"usr","type":"address"},{"indexed":true,"internalType":"bytes32","name":"arg1","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"arg2","type":"bytes32"},{"indexed":false,"internalType":"bytes","name":"data","type":"bytes"}],"name":"LogNote","type":"event"},{"constant":true,"inputs":[],"name":"beg","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"bids","outputs":[{"internalType":"uint256","name":"bid","type":"uint256"},{"internalType":"uint256","name":"lot","type":"uint256"},{"internalType":"address","name":"guy","type":"address"},{"internalType":"uint48","name":"tic","type":"uint48"},{"internalType":"uint48","name":"end","type":"uint48"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"cage","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"deal","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"uint256","name":"lot","type":"uint256"},{"internalType":"uint256","name":"bid","type":"uint256"}],"name":"dent","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"usr","type":"address"}],"name":"deny","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes32","name":"what","type":"bytes32"},{"internalType":"uint256","name":"data","type":"uint256"}],"name":"file","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"gem","outputs":[{"internalType":"contract GemLike","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"gal","type":"address"},{"internalType":"uint256","name":"lot","type":"uint256"},{"internalType":"uint256","name":"bid","type":"uint256"}],"name":"kick","outputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"kicks","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"live","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"pad","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"usr","type":"address"}],"name":"rely","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"tau","outputs":[{"internalType":"uint48","name":"","type":"uint48"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"tick","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"ttl","outputs":[{"internalType":"uint48","name":"","type":"uint48"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"vat","outputs":[{"internalType":"contract VatLike","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"vow","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"wards","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"yank","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}];
@@ -499,8 +500,6 @@ const RELY = "0x65fae35e00000000000000000000000000000000000000000000000000000000
 const auctions = {};
 const our_auctions = {};
 
-// Apply -14.85% to price to get current bid
-
 const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
 
 
@@ -509,10 +508,13 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
     for (let i = 0; i < events.length; i++) {
         let event = events[i];
         let blockDate = new Date();
+        let formattedTime = "";
         await web3.eth.getBlock(event.blockNumber).then(function (block) {
             if (block) {
                 const blockTime = block.timestamp;
                 blockDate = new Date(blockTime * 1000);
+                // formattedTime = moment(blockTime).format("hh:mm:ss a")
+                formattedTime = moment(blockTime * 1000).tz('America/New_York').format("hh:mm:ss a")
             }
         });
         let eventType = "UNKNOWN";
@@ -530,11 +532,12 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
             // Clear and Get current price value
             medianizerPrice = 0;
             await updateMedianizerPrice(event.blockNumber);
+            // kickDate: blockDate.toUTCString().slice(5),
 
             // Register KICK over Auction dictionary
             auctions[flapId] = {
                 id: flapId,
-                kickDate: blockDate.toUTCString().slice(5),
+                kickDate: formattedTime,
                 kickDay: blockDate.getUTCDate(),
                 kickMonth: blockDate.getUTCMonth() + 1,
                 kickPrice: medianizerPrice.toString(),
@@ -572,12 +575,11 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
             // Register TEND over Auction dictionary
             auctions[flapId]["tends"] += 1;
             auctions[flapId]["bid"] = bid.toFixed(4);
+            auctions[flapId]["dentDate"] = formattedTime;
             auctions[flapId]["bidPrice"] = medianizerPrice.toString();
             auctions[flapId]["lot"] = lot.toFixed(4);
             auctions[flapId]["paidPrice"] = (bid / lot).toFixed(2);
             
-            // auctions[flapId]["DENTDiffPercentage"] = ((auctions[flapId]["paidPrice"] / auctions[flapId]["bidPrice"]) - 1) * 100;
-
         } else if (event.raw.topics[0] === DEAL) {
             eventType = "DEAL";
             flapId = parseInt(event.raw.topics[2], 16);
@@ -593,8 +595,6 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
             // Register DEAL over Auction dictionary
             auctions[flapId]["dealPrice"] = medianizerPrice.toString();
             auctions[flapId]["state"] = "CLOSE";
-
-            // auctions[flapId]["DEALDiffPercentage"] = ((auctions[flapId]["paidPrice"] / auctions[flapId]["bidPrice"]) - 1) * 100;
 
         } else if (event.raw.topics[0] === TICK) {
             eventType = "TICK";

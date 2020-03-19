@@ -40,7 +40,12 @@ function addArrayToSheetColumn(sheet, startRow, column, values, field) {
   const range = [column, `${startRow}:`, column, startRow - 1 + values.length].join("");
   const fn = function(v) {
     if (field.length > 0) {
-      return [ v[field] ];    
+      if (field == "lot") {
+        return [ 50000 / v[field] ]
+      }
+      else {
+        return [ v[field] ];    
+      }
     }
     else {
       return [ v ];
@@ -64,16 +69,17 @@ function addData() {
   addArrayToSheetColumn(cache, 16, "B", auctionResults, "id");
   
   //  add current price
-  addArrayToSheetColumn(cache, 16, "C", auctionResults, "bidPrice");
-  
-  //  add our bid 
-  // TODO: utilize parseAuctions function()  
+  addArrayToSheetColumn(cache, 16, "C", auctionResults, "lot");
 
   //  add kick date
-  addArrayToSheetColumn(cache, 16, "I", auctionResults, "kickDate");
+  addArrayToSheetColumn(cache, 16, "J", auctionResults, "kickDate");
   
-//  //  add dent date
-//  addArrayToSheetColumn(cache, 16, "J", auctionResults, "kickDate");  
+  //  add dent date
+  addArrayToSheetColumn(cache, 16, "K", auctionResults, "dentDate");
+  
+   //  add kick date
+  addArrayToSheetColumn(cache, 16, "L", auctionResults, "guy");
+  
 }
 
 

@@ -439,9 +439,6 @@ const osmContract = new web3.eth.Contract(MEDIANIZER_ABI, MEDIANIZER_ADDRESS);
 const vowContract = new web3.eth.Contract(VOW_ABI, VOW_ADDRESS);
 const vatContract = new web3.eth.Contract(VAT_ABI, VAT_ADDRESS);
 
-// Maker Keeper Bot Addresses
-const makerAddress = ['0xD9d1E81bb35DB066986Fa441113a27708663D70B', '0x8A559ebE64bd94634f2107ea8d4C4261C5220fe6', '0xc2d6B57905B089a006BB23f3B5e8F70a30e4b214']
-
 // Get new events and populate last events global variable
 let events = [];
 const getFlipEvents = function getFlipEvents(fromBlockNumber) {
@@ -532,6 +529,7 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
             // Register KICK over Auction dictionary
             auctions[flapId] = {
                 id: flapId,
+                address: event.address,
                 kickDate: blockDate.toUTCString().slice(5),
                 kickDay: blockDate.getUTCDate(),
                 kickMonth: blockDate.getUTCMonth() + 1,

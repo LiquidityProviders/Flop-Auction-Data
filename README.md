@@ -4,3 +4,7 @@ This system utilizes TWO Google App Script modules. One deploys a Web Applicatio
 
 <!-- https://developers.google.com/apps-script/guides/sheets/functions -->
 <!-- SPECIFICALLY: getBlogPosts() example for calling web application -->
+
+
+## Resources:
+- https://tanaikech.github.io/2019/07/05/linking-cloud-platform-project-to-google-apps-script-project/

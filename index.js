@@ -33,11 +33,11 @@ app.get("/auctions", async (req, res) => {
         })
 });
 
+// Mock Auction Data
 app.get("/test", (req, res) => {
     const mockData = {
         42069: {
             id: 42069,
-            address: '0xD9d1E81bb35DB066986Fa441113a27708663D70B',
             kickDate: new Date(),
             kickDay: new Date(),
             kickMonth: new Date(),
@@ -49,14 +49,13 @@ app.get("/test", (req, res) => {
             bidPrice: null,
             lot: null,
             tab: 0,
-            guy: null,
+            guy: '0xD9d1E81bb35DB066986Fa441113a27708663D70B',
             dealPrice: null,
             paidPrice: null,
             state: "OPEN"            
         },
         42100: {
             id: 42069,
-            address: '0x332f60EDC783E4Db3E0a18F8dFEB368Ae178CCd9',
             kickDate: new Date(),
             kickDay: new Date(),
             kickMonth: new Date(),
@@ -68,7 +67,7 @@ app.get("/test", (req, res) => {
             bidPrice: null,
             lot: null,
             tab: 0,
-            guy: null,
+            guy: '0x332f60EDC783E4Db3E0a18F8dFEB368Ae178CCd9',
             dealPrice: null,
             paidPrice: null,
             state: "OPEN"            

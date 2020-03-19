@@ -429,7 +429,8 @@ var usingRemoteProvider = true;
 
 if (usingRemoteProvider) {
     const infura = "https://mainnet.infura.io/v3/cde88afeb2d9475aa8a7b3813e7386cf";
-    const provider = new Web3.providers.HttpProvider(infura);
+    // const node = "http://cf-parity-mainnet-rpc-lb-da584e7f18123a79.elb.us-east-1.amazonaws.com:8545/"
+    const provider = new Web3.providers.HttpProvider(infura, 60);
     web3 = new Web3(provider);
     console.log("Using remote web3 provider");
 }
@@ -498,6 +499,8 @@ const RELY = "0x65fae35e00000000000000000000000000000000000000000000000000000000
 const auctions = {};
 const our_auctions = {};
 
+// Apply -14.85% to price to get current bid
+
 const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
 
 
@@ -531,7 +534,6 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
             // Register KICK over Auction dictionary
             auctions[flapId] = {
                 id: flapId,
-                address: event.address,
                 kickDate: blockDate.toUTCString().slice(5),
                 kickDay: blockDate.getUTCDate(),
                 kickMonth: blockDate.getUTCMonth() + 1,

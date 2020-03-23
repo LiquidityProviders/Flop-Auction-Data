@@ -33,17 +33,6 @@ app.get("/auctions", async (req, res) => {
         })
 });
 
-// Retrieve global auction time
-// app.get("/globals", async (req, res) => {
-//     Promise.resolve(getGlobalData())
-//         .then(globals => {
-//             console.log("global data!", globals)
-//             res.json(globals)
-//         })
-//         .catch(error => {
-//             res.send(error)
-//         })
-// })
 
 // Mock Auction Data
 app.get("/test", (req, res) => {

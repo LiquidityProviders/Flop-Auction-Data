@@ -429,9 +429,9 @@ var web3;
 var usingRemoteProvider = true;
 
 if (usingRemoteProvider) {
-    const infura = "https://mainnet.infura.io/v3/cde88afeb2d9475aa8a7b3813e7386cf";
-    // const node = "http://cf-parity-mainnet-rpc-lb-da584e7f18123a79.elb.us-east-1.amazonaws.com:8545/"
-    const provider = new Web3.providers.HttpProvider(infura, 60);
+    // const node = "https://mainnet.infura.io/v3/cde88afeb2d9475aa8a7b3813e7386cf";
+    const node = "http://cf-parity-mainnet-rpc-lb-da584e7f18123a79.elb.us-east-1.amazonaws.com:8545/"
+    const provider = new Web3.providers.HttpProvider(node, 60);
     web3 = new Web3(provider);
     console.log("Using remote web3 provider");
 }
@@ -498,7 +498,6 @@ const RELY = "0x65fae35e00000000000000000000000000000000000000000000000000000000
 
 // Variable to summarize by ID all auctions currently registered
 const auctions = {};
-const our_auctions = {};
 
 const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
 
@@ -507,16 +506,19 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
     // Iterate over events
     for (let i = 0; i < events.length; i++) {
         let event = events[i];
+
         let blockDate = new Date();
         let formattedTime = "";
-        await web3.eth.getBlock(event.blockNumber).then(function (block) {
-            if (block) {
-                const blockTime = block.timestamp;
-                blockDate = new Date(blockTime * 1000);
-                // formattedTime = moment(blockTime).format("hh:mm:ss a")
-                formattedTime = moment(blockTime * 1000).tz('America/New_York').format("hh:mm:ss a")
-            }
-        });
+        if (event.event === "Kick" || event.raw.topics[0] === DENT) {
+            await web3.eth.getBlock(event.blockNumber).then(function (block) {
+                if (block) {
+                    const blockTime = block.timestamp;
+                    blockDate = new Date(blockTime * 1000);
+                    formattedTime = moment(blockTime * 1000).tz('America/New_York').format("MM/DD/YYYY hh:mm:ss a")
+                }
+            });
+        }
+
         let eventType = "UNKNOWN";
         let flapId = 0;
 
@@ -594,7 +596,7 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
 
             // Register DEAL over Auction dictionary
             auctions[flapId]["dealPrice"] = medianizerPrice.toString();
-            auctions[flapId]["state"] = "CLOSE";
+            auctions[flapId]["state"] = "CLOSED";
 
         } else if (event.raw.topics[0] === TICK) {
             eventType = "TICK";
@@ -626,12 +628,10 @@ const retrieveFlopAuctionData = async function retrieveFlopAuctionData(someID) {
 
 
 
-// TODO: filter events for the chosen address
-// Create a second object to track our auctions in the ids
-
 async function getAuctionData() {
     // Fetch old events to populate list at initial load
-    const blocksBack = 18095; // 18095 -> 3.14 days blocks count
+    // const blocksBack = 18095; // 18095 -> 3.14 days blocks count
+    const blocksBack = 17000;
     const lastBlockfetch = await web3.eth.getBlockNumber();
     const fromBlock = lastBlockfetch - blocksBack;
     await getFlipEvents(fromBlock);
